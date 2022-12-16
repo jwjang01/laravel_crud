@@ -4,6 +4,8 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import BoardView from "./BoardView";
 import BoardInput from "./BoardInput";
+import BoardSingleView from "./BoardSingleView";
+import BoardUpdate from "./BoardUpdate";
 
 const MyApp = () => {
     return (
@@ -11,6 +13,8 @@ const MyApp = () => {
             <Routes>
                 <Route path="/" element={<BoardView />} />
                 <Route path="/create" element={<BoardInput />} />
+                <Route path="/read/:idx" element={<BoardSingleView />} />
+                <Route path="/update/:idx" element={<BoardUpdate />} />
             </Routes>
         </>
     );

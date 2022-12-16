@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\board;
-use App\Http\Requests\StoreboardRequest;
-use App\Http\Requests\UpdateboardRequest;
+use Illuminate\Http\Request;
+use App\Http\Requests\StoreBoardRequest;
+use App\Http\Requests\UpdateBoardRequest;
+use Exception;
+use App\Models\Board;
 
 class BoardController extends Controller
 {
@@ -15,7 +17,13 @@ class BoardController extends Controller
      */
     public function index()
     {
-        //
+        try {
+            return Board::orderBy('id', 'desc')->get();
+        } catch (Exception $err) {
+            return response()->json([
+                'message' => 'board data load failed'
+            ], 500);
+        }
     }
 
     /**
@@ -31,32 +39,61 @@ class BoardController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \App\Http\Requests\StoreboardRequest  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(StoreboardRequest $request)
+    public function store(Request $request)
     {
-        //
+        $inputData = $request->all();
+
+        try {
+            $newBoard = Board::create($inputData);
+
+            if ($newBoard) {
+                return response()->json([
+                    'error' => 0,
+                    'message' => 'register success'
+                ]);
+            }
+            
+        } catch (Exception $err) {
+            return response()->json([
+                'message' => 'Internal Server Error'
+            ], 500);
+        }
+        
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\board  $board
+     * @param  int $idx
      * @return \Illuminate\Http\Response
      */
-    public function show(board $board)
+    public function show($idx)
     {
-        //
+        try {
+            if(Board::where('id', $idx)->exists()) {
+                return Board::find($idx);
+            } else {
+                return response()->json([
+                    'message' => 'cannot find data'
+                ], 404);
+            }
+        } catch (Exception $err) {
+            return response()->json([
+                "message" => 'Internal Sever error'
+            ], 500);
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Models\board  $board
+     * @param  \App\Models\Board  $Board
      * @return \Illuminate\Http\Response
      */
-    public function edit(board $board)
+    public function edit(Board $Board)
     {
         //
     }
@@ -64,23 +101,59 @@ class BoardController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \App\Http\Requests\UpdateboardRequest  $request
-     * @param  \App\Models\board  $board
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int $idx
      * @return \Illuminate\Http\Response
      */
-    public function update(UpdateboardRequest $request, board $board)
+    public function update(Request $request, $idx)
     {
-        //
+        try {
+            if(Board::where('id', $idx)->exists()) {
+                $fetchedData = Board::find($idx);
+                $inputData = $request->all();
+                $updateBoard = $fetchedData->update($inputData);
+
+                return response()->json([
+                    'error' => 0,
+                    'updated' => $updateBoard
+                ]);
+            } else {
+                return response()->json([
+                    'message'=> 'cannot find data'
+                ], 404);
+            }
+        } catch (Exception $err) {
+            return response()->json([
+                'message' => 'Internal Server Error'
+            ], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\board  $board
+     * @param  int $idx
      * @return \Illuminate\Http\Response
      */
-    public function destroy(board $board)
+    public function destroy($idx)
     {
-        //
+        try {
+            if (Board::where('id', $idx)->exists()) {
+                $deleteBoard = Board::find($idx)->delete();
+
+                return response()->json([
+                    'error' => 0,
+                    'deleted' => $deleteBoard
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'cannot find data'
+                ], 404);
+            }
+        } catch (Exception $err) {
+            return response()->json([
+                'message' => 'Internal Server Error'
+            ], 500);
+        }
     }
 }

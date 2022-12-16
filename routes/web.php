@@ -17,3 +17,6 @@ Route::get('/{path?}', function () {
     return view('home');
 })->where('path', '.*');
 
+// Route::get('/', function () {
+//     return view('home');
+// });

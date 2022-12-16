@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,4 +19,10 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // });
 
-
+Route::prefix('board')->group(function () {
+    Route::get('/list', [BoardController::class, 'index']);
+    Route::get('/single/{idx}', [BoardController::class, 'show']);
+    Route::post('/create', [BoardController::class, 'store']);
+    Route::post('/update/{idx}', [BoardController::class, 'update']);
+    Route::get('/delete/{idx}', [BoardController::class, 'destroy']);
+});

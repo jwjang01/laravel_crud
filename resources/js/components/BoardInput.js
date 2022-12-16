@@ -2,11 +2,12 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "../../css/app.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function BoardInput() {
     const navigate = useNavigate();
 
-    const submitHandler = (e) => {
+    const submitHandler = async (e) => {
         e.preventDefault();
         const { title, content, author } = e.target;
         const boardData = {
@@ -14,9 +15,16 @@ function BoardInput() {
             content: content.value,
             author: author.value,
         };
+        const response = await axios.post(
+            "http://localhost:8000/api/board/create",
+            boardData
+        );
         // console.log("boardData", boardData);
-        alert("게시글이 등록되었습니다.");
-        navigate("/");
+        const { error } = response.data;
+        if (!error) {
+            alert("게시글이 등록되었습니다.");
+            navigate("/");
+        }
     };
 
     return (
@@ -59,6 +67,6 @@ function BoardInput() {
 
 export default BoardInput;
 
-if (document.getElementById("boardInput")) {
-    ReactDOM.render(<BoardInput />, document.getElementById("boardInput"));
-}
+// if (document.getElementById("boardInput")) {
+//     ReactDOM.render(<BoardInput />, document.getElementById("boardInput"));
+// }
