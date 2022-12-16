@@ -1,0 +1,16 @@
+li {
+    margin-top: 15px;
+}
+
+.input-box {
+    width: 250px;
+    height: 15px;
+    padding: 7px 14px;
+}
+
+.content-box {
+    width: 500px;
+    height: 100px;
+    resize: none;
+    padding: 7px 14px;
+}
